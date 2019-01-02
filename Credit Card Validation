@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Credit Card Validation</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<style>
+body {
+  color:black;
+  font-family: 'Roboto', sans-serif;
+  float: center;
+  background-color: lightblue;
+}
+
+#result, #zip, #email {
+  background-color: lightyellow;
+}
+
+.center {
+  margin: 0 auto;
+  width: 440px;
+  padding: 20px;
+}
+
+li {
+  font-size: 12pt;
+  line-height: 20pt;
+}
+
+fieldset {
+  width: 400px;
+  padding: 20px;
+  margin-top: 40px;
+  border: 1px solid #04316C;
+  background-color:#575757;
+  line-height: 1.6em;
+}
+
+label {
+    color: #ffffff;
+}
+
+input {
+font-size: 12pt;
+}
+
+input:focus, textarea:focus{
+background-color: lightyellow;
+}
+
+input[type="button"] {
+  border: 1px solid #ffffff;
+  background-color: lightblue;
+  color: #04316C;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 12pt;
+}
+
+input[type="button"]:hover {
+  border: 1px solid #04316C;
+  background-color: lightyellow;
+  color: #04316C;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="center">
+<h2>Please enter your credit card information</h2>
+<p>Rules for a valid credit card number:
+  <ol>
+  <li><span id="one">Number must be 16 digits, all of them must be numbers</span></li>
+  <li><span id="two">You must have at least two different digits represented <br />
+    (all of the digits cannot be the same)</span></li>
+  <li><span id="three">The final digit must be even</span></li>
+  <li><span id="four">The sum of all the digits must be greater than 16</span></li>
+  </ol>
+</p>
+<form name="form" action="#">
+  <fieldset>
+    <label>Card Number: </label><input type='text' name='card' maxLength="16"><p id="result"></p><br />
+    <label>Zip: </label><input type='text' name='zip' maxLength="5"><p id="zip"></p><br />
+    <label>E-mail: </label><input type='email' name='email'><p id="email"></p><br />
+    <input type="button" name="button" value="Submit" onclick="validate()"/>
+  </fieldset>
+</form>
+</div>
+<script>
+
+function validate() {
+  var cardNum = document.form.card.value;
+  var errcnt = 0;
+  var check = checkDigits(cardNum);
+  if(check == false) {
+    errcnt++;
+    document.getElementById("one").style.backgroundColor = "pink";
+  } else {
+    document.getElementById("one").style.backgroundColor = "";
+  }
+
+  check = checkEvery(cardNum);
+  if(check == false) {
+    errcnt++;
+    document.getElementById("two").style.backgroundColor = "pink";
+  } else {
+    document.getElementById("two").style.backgroundColor = "";
+  }
+
+  check = checkEvenNum(cardNum);
+  if(check == false) {
+    errcnt++;
+    document.getElementById("three").style.backgroundColor = "pink";
+  } else {
+    document.getElementById("three").style.backgroundColor = "";
+  }
+
+  check = checkSum(cardNum);
+  if(check == false) {
+    errcnt++;
+    document.getElementById("four").style.backgroundColor = "pink";
+  } else {
+    document.getElementById("four").style.backgroundColor = "";
+  }
+
+  if(errcnt == 0) {
+    document.getElementById("result").innerHTML = "";
+  }  else {
+    document.getElementById("result").innerHTML = "Please check the highlighted validation";
+  }
+
+  checkZip();
+  ValidateEmail();
+}
+
+function checkDigits(n) {
+  var result = false;
+  if(isNaN(n) || n.length < 16) {
+    result = false;
+  } else {
+    result = true;
+  }
+  return result;
+}
+
+function checkEvenNum(n) {
+  var result = false;
+  if( !isNaN(n) && n % 2 !== 0) {
+    result = false;
+  } else {
+    result = true;
+  }
+  return result;
+}
+
+function checkSum(n) {
+  var str = n.toString();
+  var arr = str.split("");
+  var sum = 0;
+
+  for (var i = 0; i < arr.length; i++) {
+    sum += parseInt(arr[i]);
+  }
+  //window.alert(sum);
+  var result = false;
+  if(sum <= 16) {
+    result = false;
+  } else {
+    result = true;
+  }
+  return result;
+}
+
+
+function isSame(ell,indexx,arrr) {
+      // Do not test the first array element, as you have nothing to compare to
+      if (indexx === 0){
+          return true;
+      }
+      else {
+      //do each array element value match the value of the previous array element
+          return (ell === arrr[indexx - 1]);
+      }
+}
+
+function checkEvery(n) {
+  var str = n.toString();
+  var arr = str.split("");
+  return !arr.every(isSame);
+}
+
+function checkZip() {
+  var zip = document.form.zip.value;
+
+  if( isNaN(zip) || zip.length < 5 || zip <= 0 ) {
+    document.getElementById("zip").innerHTML = "Zip code is invalid format";
+  } else {
+    document.getElementById("zip").innerHTML = "";
+  }
+}
+
+function ValidateEmail()
+{
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.form.email.value))
+  {
+    document.getElementById("email").innerHTML = "";
+  }
+  else {
+    document.getElementById("email").innerHTML = "You have entered an invalid email address!";
+  }
+}
+</script>
+
+</body>
+</html>
